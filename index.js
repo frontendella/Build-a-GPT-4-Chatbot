@@ -48,19 +48,18 @@ function fetchReply() {
         if (snapshot.exists()) {
             const conversationArr = Object.values(snapshot.val())
             conversationArr.unshift(instructionObj)
-/*
-Challenge:
-    1. Add 'instructionObj' to the front of conversationArr.
-    ⚠️ ️You're going to get an error! Try to debug it!
-*/
             const response = await openai.createChatCompletion({
                 model: 'gpt-4',
                 messages: conversationArr,
                 presence_penalty: 0,
                 frequency_penalty: 0.3
             })
-            console.log(response)
-            conversationArr.push(response.data.choices[0].message)
+/*
+Challenge:
+    1. Add the completion to the database.
+    2. Ask the chatbot something to check it's working.
+*/
+            push(conversationInDb, response.data.choices[0].message)
             renderTypewriterText(response.data.choices[0].message.content)
         }
         else {
