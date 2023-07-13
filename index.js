@@ -54,11 +54,6 @@ function fetchReply() {
                 presence_penalty: 0,
                 frequency_penalty: 0.3
             })
-/*
-Challenge:
-    1. Add the completion to the database.
-    2. Ask the chatbot something to check it's working.
-*/
             push(conversationInDb, response.data.choices[0].message)
             renderTypewriterText(response.data.choices[0].message.content)
         }
@@ -84,3 +79,29 @@ function renderTypewriterText(text) {
         chatbotConversation.scrollTop = chatbotConversation.scrollHeight
     }, 50)
 }
+
+/*
+Challenge:
+    1. Create a function called renderConversationFromDb which 
+       will render any existing conversation in the database.
+    2. This function should be called when the app loads.
+*/ 
+
+function renderConversationFromDb(){
+    get(conversationInDb).then(async (snapshot)=>{
+        if(snapshot.exists()) {
+            Object.values(snapshot.val()).forEach(dbObj => {
+                const newSpeechBubble = document.createElement('div')
+                newSpeechBubble.classList.add(
+                    'speech',
+                    `speech-${dbObj.role === 'user' ? 'human' : 'ai'}`
+                    )
+                chatbotConversation.appendChild(newSpeechBubble)
+                newSpeechBubble.textContent = dbObj.content
+            })
+            chatbotConversation.scrollTop = chatbotConversation.scrollHeight
+        }
+    })
+}
+
+renderConversationFromDb()
