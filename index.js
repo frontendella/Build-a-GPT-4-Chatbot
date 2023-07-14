@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getDatabase, ref, push, get } from 'firebase/database'
+import { getDatabase, ref, push, get, remove } from 'firebase/database'
 
 import { Configuration, OpenAIApi } from 'openai'
 import { process } from './env'
@@ -24,7 +24,7 @@ const chatbotConversation = document.getElementById('chatbot-conversation')
 
 const instructionObj = {
     role: 'system',
-    content: 'You are an assistant that gives very short answers.'
+    content: 'You are a helpful assistant.'
 }
 
 document.addEventListener('submit', (e) => {
@@ -80,12 +80,10 @@ function renderTypewriterText(text) {
     }, 50)
 }
 
-/*
-Challenge:
-    1. Create a function called renderConversationFromDb which 
-       will render any existing conversation in the database.
-    2. This function should be called when the app loads.
-*/ 
+document.getElementById('clear-btn').addEventListener('click', () => {
+    remove(conversationInDb)
+    chatbotConversation.innerHTML = '<div class="speech speech-ai">How can I help you?</div>'
+})
 
 function renderConversationFromDb(){
     get(conversationInDb).then(async (snapshot)=>{
